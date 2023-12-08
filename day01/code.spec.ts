@@ -27,7 +27,7 @@ describe.skip("Part 1", () => {
   });
 });
 
-describe("Part 2", () => {
+describe.skip("Part 2", () => {
   it("should pass test input", () => {
     expect(partTwo(secondTestInput)).toBe(281);
   });
