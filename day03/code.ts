@@ -6,13 +6,13 @@ function readPositionString(positionString: string) {
   return positionString.split(",").map((p) => parseInt(p, 10));
 }
 
-function findSymbols(input: string[]) {
+function findGearSymbols(input: string[]) {
   const symbolLocations = [];
   for (let y = 0; y < input.length; y++) {
     const row = input[y].split("");
     for (let x = 0; x < row.length; x++) {
       const char = row[x];
-      if (char.match(/[^\d/.]/)) {
+      if (char.match(/[*]/)) {
         symbolLocations.push(getPositionString(x, y));
       }
     }
@@ -112,6 +112,21 @@ function getAllNumbers(input: string[]) {
   return numbers;
 }
 
+function getNumbersAroundPosition(numbers, position) {
+  const [x, y] = readPositionString(position);
+  return numbers.filter((n) => {
+    // console.log(
+    //   JSON.stringify({
+    //     x,
+    //     y,
+    //     nY: n.y,
+    //     xRange: n.xRange,
+    //   })
+    // );
+    return y - 1 <= n.y && n.y <= y + 1 && n.xRange[0] - 1 <= x && n.xRange[1] >= x;
+  });
+}
+
 function numberAdjacentPositions(number): string[] {
   const adjacent = [];
   for (let x = number.xRange[0] - 1; x <= number.xRange[1]; x++) {
@@ -143,8 +158,32 @@ export function partOne(input) {
 
   return schema
     .map((number) => number.number)
-    .map(n => Number.parseInt(n, 10))
+    .map((n) => Number.parseInt(n, 10))
     .reduce((prev, curr) => prev + curr, 0);
 }
 
-export function partTwo(input) {}
+export function partTwo(input) {
+  const numbers = getAllNumbers(input);
+  // console.log(numbers);
+  const gearPositions = findGearSymbols(input);
+  // console.log(gearPositions);
+
+  const gearNumbers = gearPositions
+    .map((pos) => {
+      const nums = getNumbersAroundPosition(numbers, pos);
+      if (nums.length === 2) {
+        return nums;
+      }
+      return undefined;
+    })
+    .filter((x) => x);
+
+  // console.log(JSON.stringify(gearNumbers));
+
+  return gearNumbers
+    .map(
+      ([n1, n2]) =>
+        Number.parseInt(n1.number, 10) * Number.parseInt(n2.number, 10)
+    )
+    .reduce((prev, curr) => prev + curr, 0);
+}

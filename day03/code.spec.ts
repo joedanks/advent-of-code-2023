@@ -28,13 +28,13 @@ describe.skip("Part 1", () => {
   });
 });
 
-describe.skip("Part 2", () => {
+describe("Part 2", () => {
   it("should pass test input", () => {
-    expect(partTwo(testInput)).toBe(2286);
+    expect(partTwo(testInput)).toBe(467835);
   });
 
   it("should run real input", () => {
     const result = partTwo(loadInput());
-    expect(result).toBe(72970);
+    expect(result).toBe(81166799);
   });
 });
